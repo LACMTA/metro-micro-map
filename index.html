@@ -34,7 +34,20 @@
         
         // Existing Metro Rail and Busway:
         // https://lametro.maps.arcgis.com/home/item.html?id=17fc6859e51e4188b4a4120fcbd2e43d
-        const mapImagery = 'https://tiles.arcgis.com/tiles/TNoJFjk1LsD45Juj/arcgis/rest/services/Map_RGB_Vector_Offset_RC5/MapServer';
+        // const mapImagery = 'https://tiles.arcgis.com/tiles/TNoJFjk1LsD45Juj/arcgis/rest/services/Map_RGB_Vector_Offset_RC5/MapServer';
+
+
+        // Metro Micro zones:
+        const zones = [
+            'data/20260615093710_HighlandPark_Eagle Rock_Glendale_ZoneAreaExport.geojson',
+            'data/20260615093722_LAX_Inglewood_ZoneAreaExport.geojson',
+            'data/20260615093787_ElMonte_ZoneAreaExport.geojson',
+            'data/20260615093815_Altadena_Pasadena_SierraMadre_ZoneAreaExport.geojson',
+            'data/20260615093842_UCLA_Westwood_VAMedical Center_ZoneAreaExport.geojson',
+            'data/20260615093882_Watts_Compton_ZoneAreaExport.geojson',
+            'data/20260615093979_NorthHollywood_Burbank_ZoneAreaExport.geojson',
+            'data/20260721131063_NorthwestSan Fernando Valley new test_ZoneAreaExport.geojson'
+        ];
 
         const map = L.map('map', {
             minZoom: 2
@@ -46,12 +59,29 @@
         }).addTo(map);
 
         // Add the Metro Rail and Busway Layer
-        let metroLayer = new L.esri.TiledMapLayer({
-            url: mapImagery,
-            apiKey: ESRI_KEY
-        });
+        // let metroLayer = new L.esri.TiledMapLayer({
+        //     url: mapImagery,
+        //     apiKey: ESRI_KEY
+        // });
+        // 
+        // metroLayer.addTo(map);
 
-        metroLayer.addTo(map);
+        // Add Metro Micro zones
+        zones.forEach(path => {
+            fetch(path)
+                .then(response => response.json())
+                .then(geojsonData => {
+                    console.log('GeoJSON successfully loaded: ' + path);
+
+                    let geojsonFeature = geojsonData.features[0];
+                    L.geoJSON(geojsonFeature).addTo(map);
+                })
+                .catch(error => console.error('Error loading GeoJSON: ' + path));
+        })
+
+
+
+
     </script>
 </body>
 </html>
