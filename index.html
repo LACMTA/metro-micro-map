@@ -27,7 +27,7 @@
 
     <script>
         // This "Map Template API Key" expires on 11/1/2026 (1 year expiration limit) and is limited to use on Metro GitHub pages
-        const ESRI_KEY =  "AAPTxy8BH1VEsoebNVZXo8HurCIBEXS58hLwaInNH7mnZeFDQtLv6ne8Ndu9F_uhRYlcW5FIADQ6Oqw0GcLyIBBZ5ugC_S2YPSi5j39j2x0xApeAx6p3YRGMyipe4v0245BD1V0CUtALY1P2tQ7CdP2HWh7jlSGOd7bi5XTNqrLGdqtdQ3pvze0xZwlCEXSPC9t4hFZDGaLqCnAOq9hXDtT-hzdjyDN4uG6DtdejxJZygpE5Fc5ny-FVkAxAFZLgP0JaAT1_iGEOXQH7";
+        const ESRI_KEY =  "AAPTa8rDnsmBWfSSL8bkW6WkjSA..OCUdQlXO8SnxHYLP7xNdDwZhlvMrkTnBabET9CrUUKI4RfPLEz5aUFPt53cfDV5t2XtsO6wTGU0OoHNK2Zmc2twKGJZj9csm4-dSWjmW4kBz4qQSW2CZzFDOWkihXsCT3JdEsSGTi2CHHyBwXp5APARzNhuBHz1Th1f1VpbG2DrqnEetcw0qGc2vgzEJrHTgHFfdLeZ-qbwDGKOgm0RIflWSKnwBD9J-A696etj4FMWARWLqcmNNE1sQoDHEjz7HMXABAT1_mnx5UmlP";
 
         // Metro Branded Basemap:
         const basemapEnum = "65aff2873118478482ec3dec199e9058";
@@ -39,14 +39,39 @@
 
         // Metro Micro zones:
         const zones = [
-            'data/20260615093710_HighlandPark_Eagle Rock_Glendale_ZoneAreaExport.geojson',
-            'data/20260615093722_LAX_Inglewood_ZoneAreaExport.geojson',
-            'data/20260615093787_ElMonte_ZoneAreaExport.geojson',
-            'data/20260615093815_Altadena_Pasadena_SierraMadre_ZoneAreaExport.geojson',
-            'data/20260615093842_UCLA_Westwood_VAMedical Center_ZoneAreaExport.geojson',
-            'data/20260615093882_Watts_Compton_ZoneAreaExport.geojson',
-            'data/20260615093979_NorthHollywood_Burbank_ZoneAreaExport.geojson',
-            'data/20260721131063_NorthwestSan Fernando Valley new test_ZoneAreaExport.geojson'
+            {
+                'name': 'Highland Park/Eagle Rock/Glendale',
+                'data': 'data/20260615093710_HighlandPark_Eagle Rock_Glendale_ZoneAreaExport.geojson',
+                'color': '#0076BF'
+            },{
+                'name': 'LAX/Inglewood',
+                'data':  'data/20260615093722_LAX_Inglewood_ZoneAreaExport.geojson',
+                'color': '#5DA542'
+            },{
+                'name': 'El Monte',
+                'data':  'data/20260615093787_ElMonte_ZoneAreaExport.geojson',
+                'color': '#A25CA9'
+            },{
+                'name': 'Altadena/Pasadena/Sierra Madre',
+                'data':  'data/20260615093815_Altadena_Pasadena_SierraMadre_ZoneAreaExport.geojson',
+                'color': '#45A9C5'
+            },{
+                'name': 'UCLA/Westwood/VA Medical Center',
+                'data':  'data/20260615093842_UCLA_Westwood_VAMedical Center_ZoneAreaExport.geojson',
+                'color': '#F54F06'
+            },{
+                'name': 'Watts/Compton',
+                'data':  'data/20260615093882_Watts_Compton_ZoneAreaExport.geojson',
+                'color': '#E03862'
+            },{
+                'name': 'North Hollywood/Burbank',
+                'data':  'data/20260615093979_NorthHollywood_Burbank_ZoneAreaExport.geojson',
+                'color': '#53C3F1'
+            },{
+                'name': 'Northwest San Fernando Valley',
+                'data':  'data/20260721131063_NorthwestSan Fernando Valley new test_ZoneAreaExport.geojson',
+                'color': '#F99E23'
+            }
         ];
 
         const map = L.map('map', {
@@ -67,16 +92,23 @@
         // metroLayer.addTo(map);
 
         // Add Metro Micro zones
-        zones.forEach(path => {
-            fetch(path)
+        zones.forEach(zone => {
+            fetch(zone.data)
                 .then(response => response.json())
                 .then(geojsonData => {
-                    console.log('GeoJSON successfully loaded: ' + path);
+                    console.log('GeoJSON successfully loaded: ' + zone.name);
 
                     let geojsonFeature = geojsonData.features[0];
-                    L.geoJSON(geojsonFeature).addTo(map);
+                    
+                    let geojsonLayer = L.geoJSON(geojsonFeature);
+
+                    geojsonLayer.setStyle({
+                        color: zone.color
+                    });
+
+                    geojsonLayer.addTo(map);
                 })
-                .catch(error => console.error('Error loading GeoJSON: ' + path));
+                .catch(error => console.error('Error loading GeoJSON: ' + zone.name));
         })
 
 
